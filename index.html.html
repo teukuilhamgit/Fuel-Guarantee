@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAT Fuel Guarantee Calculator – Trakindo</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cat-black: #1C1C1C;
+    --cat-yellow: #FFC300;
+    --cat-yellow-dark: #E6A800;
+    --cat-yellow-light: #FFF3CC;
+    --white: #FFFFFF;
+    --gray-50: #F8F8F8;
+    --gray-100: #F2F2F2;
+    --gray-200: #E0E0E0;
+    --gray-400: #9E9E9E;
+    --gray-700: #444444;
+    --green: #1A8A4A;
+    --green-light: #E8F5EE;
+    --red: #C0392B;
+    --red-light: #FDECEA;
+  }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--gray-100);
+    color: var(--cat-black);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--cat-black);
+    padding: 0;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+  }
+
+  .logo-cat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .trakindo-badge {
+    background: var(--cat-yellow);
+    color: var(--cat-black);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .header-accent {
+    background: var(--cat-yellow);
+    height: 4px;
+  }
+
+  .header-subtitle {
+    background: #2a2a2a;
+    padding: 8px 32px;
+    color: var(--gray-400);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .header-subtitle span {
+    color: var(--cat-yellow);
+  }
+
+  /* ── HERO BANNER ── */
+  .hero {
+    background: var(--cat-black);
+    padding: 28px 32px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #333;
+  }
+
+  .hero-text h1 {
+    color: var(--white);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+
+  .hero-text h1 .highlight {
+    background: var(--cat-yellow);
+    color: var(--cat-black);
+    padding: 2px 8px;
+    display: inline-block;
+  }
+
+  .hero-text p {
+    color: var(--gray-400);
+    font-size: 13px;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-badges {
+    display: flex;
+    gap: 10px;
+  }
+
+  .badge-pill {
+    background: #333;
+    color: var(--cat-yellow);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border: 1px solid #444;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main-container {
+    max-width: 960px;
+    margin: 28px auto;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 680px) {
+    .main-container { grid-template-columns: 1fr; }
+    .hero { flex-direction: column; gap: 16px; }
+    .hero-badges { flex-wrap: wrap; }
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+  }
+
+  .card-header {
+    background: var(--cat-black);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-header .icon {
+    width: 28px;
+    height: 28px;
+    background: var(--cat-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+  }
+
+  .card-header h2 {
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .card-body {
+    padding: 20px 20px;
+  }
+
+  /* ── FORM INPUTS ── */
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-700);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .field-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid var(--gray-200);
+    transition: border-color 0.15s;
+  }
+
+  .field-row:focus-within {
+    border-color: var(--cat-yellow);
+  }
+
+  .field-row input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cat-black);
+    padding: 10px 12px;
+    font-family: Arial, sans-serif;
+    background: transparent;
+    width: 100%;
+  }
+
+  .field-unit {
+    background: var(--gray-100);
+    border-left: 1px solid var(--gray-200);
+    color: var(--gray-400);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 0 12px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    white-space: nowrap;
+  }
+
+  .field-note {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 4px;
+  }
+
+  .selisih-display {
+    background: var(--cat-yellow-light);
+    border: 1.5px solid var(--cat-yellow);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .selisih-display .label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-700);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .selisih-display .value {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--cat-black);
+  }
+
+  .selisih-display .unit {
+    font-size: 11px;
+    color: var(--gray-700);
+    font-weight: 700;
+  }
+
+  /* ── RESULT CARD ── */
+  .result-main {
+    background: var(--cat-black);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .result-main .label-top {
+    color: var(--gray-400);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .result-main .amount {
+    color: var(--cat-yellow);
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .result-main .amount-sub {
+    color: var(--gray-400);
+    font-size: 12px;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .formula-strip {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+
+  .formula-strip .formula-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gray-400);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .formula-parts {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .formula-part {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    padding: 4px 10px;
+    text-align: center;
+  }
+
+  .formula-part .fp-val {
+    display: block;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--cat-black);
+  }
+
+  .formula-part .fp-label {
+    display: block;
+    font-size: 9px;
+    color: var(--gray-400);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .formula-op {
+    font-size: 18px;
+    color: var(--cat-yellow-dark);
+    font-weight: 900;
+  }
+
+  .formula-eq {
+    font-size: 18px;
+    color: var(--cat-black);
+    font-weight: 900;
+  }
+
+  .formula-result-inline {
+    background: var(--cat-yellow);
+    padding: 4px 10px;
+    text-align: center;
+  }
+
+  .formula-result-inline .fp-val {
+    display: block;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--cat-black);
+  }
+
+  .formula-result-inline .fp-label {
+    display: block;
+    font-size: 9px;
+    color: #665000;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── BREAKDOWN ROWS ── */
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 13px;
+  }
+
+  .breakdown-row:last-child { border-bottom: none; }
+
+  .breakdown-row .br-label {
+    color: var(--gray-700);
+  }
+
+  .breakdown-row .br-val {
+    font-weight: 700;
+    color: var(--cat-black);
+  }
+
+  /* ── GUARANTEE BADGE ── */
+  .guarantee-banner {
+    background: var(--cat-black);
+    border-left: 4px solid var(--cat-yellow);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .guarantee-banner .icon-shield {
+    width: 36px;
+    height: 36px;
+    background: var(--cat-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+
+  .guarantee-banner p {
+    color: var(--white);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .guarantee-banner strong {
+    color: var(--cat-yellow);
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* ── MANFAAT CARD ── */
+  .manfaat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .manfaat-item {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .manfaat-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--cat-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .manfaat-item .m-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--cat-black);
+    line-height: 1.3;
+  }
+
+  .manfaat-item .m-desc {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 2px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--cat-black);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+
+  footer p {
+    color: var(--gray-400);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  footer .tagline {
+    color: var(--cat-yellow);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--gray-200);
+    margin: 14px 0;
+  }
+
+  /* ── FULL WIDTH SECTION ── */
+  .full-width-section {
+    max-width: 960px;
+    margin: 0 auto 20px;
+    padding: 0 16px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="logo-cat">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wgARCAFoAt8DASIAAhEBAxEB/8QAHAABAAICAwEAAAAAAAAAAAAAAAcIBQYBAwQC/8QAGgEBAAIDAQAAAAAAAAAAAAAAAAQFAgMGAf/aAAwDAQACEAMQAAABlQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxZlEfYIl5CfwTehnLkntY2Y5AAAAOs7HmHpeYel5h6XmHpccg+T6eIe14h7XiHteIe14h7XiHteIe14vSdgAAAAAAAAAAAAAAAAAAAAGL6a/mzaX8gAABmMOJz3eq0skoAAAQrNVbzDOBy4HLgcuBYDaotlIYXNYUreAAAAAABOkFzobsAAAAAAAAAAAAAAAAAAABxzqpEOugAAAAA+vkWD2eDJzAAPFWSdoIOAAAAbhPVX7On3hc1hSt4AAAAAAE6QXOhuwAAAAAAAAAAAAAAAAAAAEWSnDpG4ABmDaNnkLkrfhbA1+AAPdZurNojtABFEWbbqQANhNec8ACxNdphJJwuaxpWduo0puo0p39AAAc7maW3UaVOmgSgbKAAAAAAAAAAAAAAAAAAABDcyQ2RyABsutbKWFBha32QreAAfVoqu2iO4D5+sAV+8oAJPjCcSJMTu2kgDedGyRZhxyAAVqxWVxQAB92iq7aI7QAAAAAAAAAAAAAAAAAAAAAIbmSGyOQANl1rZSwoMLW+yFbwAD6tFV20R3AR1IsKGgAA5sjXizxFsUTxBBwBzwLJ5fQN/AAK1YrK4oAA+7RVdtEdoAAAAAAAAAAAAAAAAAAAAAENzJDZHIAGy61spYUGFrfZGuZ1O0dTtHxaKsVnTuArdYOsp8gA2uf4hl4xtaLU1mMcACQ5nrhY8AArVisrigAD7tFV20R2gAAAAAAAAAAAAAAAAAAAAAQ3MkNkcgAbLrWylhQAAAAAabA8oxcADkmzfYcyZKEDbTphrAAPqzVY51N1ABWrFZXFAAH3aKrtojtAAAAAAAAAAAAAAAAAAAAAAhuZIbI5AA2XWtlLCgAAAAHwQJqfq8oAA59s3EBpPjE4AAk2MtlLCgArVisrigAD7tFV20R2gAAAAAAAAAAAAAAAAAAAAAQ3MkNkcgAbLrWylhQcefHVxLPqvi0Cr4tB6asWgO/X9gjohvgAGwZqaTwZbrwcHbsEf7Xld2NWuqwMGSMPCB2dYtH36ntgBWrFZXFAAH3aKrtojtAAAAAAAAAAAAAAAAAAAAAAhuZIbI5AA2XWtlLCgwtb7IVvAAPq0NXrQnfCk11uMMes80sZ/cR5ujDU8r76zm573+Bsx2nE+XO9VXV2wVoIQnadOBK0qQHPgBWrFZXFAAH3aKrtojtAAAAAAAAAAAAAAAAAAAAAAhuZIbI5AA2XWtlLCgwtb7IVvAAPq0NXrQnRWSdo8MNO3v7/H3h+jyc5PCllOHI4cjt6WTY+7Wc30tfFcb2pjm3jRLZ2rlhDYgVqxWVxQAB92iq7aI7QAAAAAAAAAAAAAAAAAAAAAIbmSHCOAANl1rKFlnz9GFrfPcCAAHus3D8wmHy/Ph1Zd+B+PnlrEcV+7njkAAccgBlspquQvoeMx2+8X8L6HqtWKyuKAAPu0VXbRHaAAAAAAAAAAAAAAAAAAAAABFMraoQAAADcdkioZHHAOTjb87Lh1d/wA4SHt78Xxzytjw5R8+Dk4OThyOOQ4OTg5HHI9Wd1futI+yujv6evrVipJjbPwAD7tFV20R2gAAAAAAAAAAAAAAAAAAAAAccivGuWQr6eEAAAyZ4plzeyDp6cHVSe3o455meGHpxyOA5cDlxyHHIccjjng5454OQfWcwKZq2qNd4yXV11WPieYQ34eUH3aKrtojtAAAAAAAAAAAAAAAAAAAAAAAw+YFfdYtTrhXhLePI0SV7TT5z9nYMX6vDVyMaySimYznJDGskMayQxrJDG8ZMY1khjWSGM5yQxrJDGskMayQxrJDG5HlvwzGCyHt6WBWzEWcjXbjGFoorlY+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf//EAC0QAAAEBAQGAgMBAQEAAAAAAAECAwUABAYgEBMUNRESMDIzUBY0ITFAIpAk/9oACAEBAAEFAv8Ak7Nz8rKRMVTKkhSq1YGqJ2Pk89BKqmghGrCRKvshMQAgYOidQhIz0oz0oz0oz0oz0oz0oz0oz0YAeIYGEChq5eNXLxq5eNXLxq5eNXLxq5eNXLxq5eNXLxq5eNXLxq5eNXLxq5eCHKoX1bhPISCTlUM1NCIiI3yLjNSRmeoEZ0ehWS3O49CmVs5nwetq69IbP6p2cE26VnZtWcX6dNPYnG95Wz3PoUQt/nB62rr0hs/qRHgD7PjPz/UAeA09P6+QtnlciTMPEehSq2S8YPW1dekNn9TU0zpmnrUlNZLnbVa2U0dGVUyZkhuYkPW1dekNn9TW6n4uaKdPNJq0tKiR0blm5a2SUypwPyFlbrf66VPr57RD1tXXpDZ/U1sP/staEAmXMPwEVLLlXaLS9yPisqhbOeLGOV1c7bRS3NKw5JGXkPjThHxpwj404R8acIWTMircFNuAh8acI+NOEfGnCKfk1ZJv9TWv3rac3vB62m0v7Q8OJh5SzKmdMWUQjxVdUshxspBbLdbnTcbS9yXi9bWv3rac3vB62m0v7Q8OL8tkNNtHpcjVVyWW7WNy2nnw/IWum42l7kvF62tfvW05veD1tNpf2h4ca1W5ZK1nSyGut0vxa0LahttdNxtL3JeL1ta/etpze8HrabS/tDw41ktzuVkonnTIBwCrEsxoto1bnbrXTcbS9yXi9bWv3rac3vB62m0v7Q8OLwtqHOymEs15hySzpC2jFuSftdNxtL3JeL1ta/etpze8HnauQ8ch45DxyHjkPAENxR8OE8rkSY/kbKJS4zGDglkz1jKtp3S103G0vcl4vW1r962nN76lWLZTRbRqXI2YVWllvFgDwGRWz5Ox03G0vcl4vW1r962nN76lbLf7tbaiTk5L5YSPlhIfXIrmrbSK2a02Om42l7kvF62tfvW05vfUqdbNeOtRK/Bex03G0vcl4vW1r962nN76ZzcpJlTOmLZOVWm1mdkQkU36n+S+nVsh3sdNxtL3JeL1ta/etpze8BEADPRjPRjPRjPRjPRjPRxflshptaWtZxVbpBCQRwfWAs1ChDJnsTMJDy6gLIYum42l7kvF62tfvW05veD1tXGOMcY4xxgP2h4IrVblkrGNhUnYQRTQSOcCAssKgoTGD0zpOJJyVVk17KYWzmfF03G0vcl4vW1r962nN7wetptD9oeCKyW53LAoCYWKnuWA/ELKgmChxOOCC/JADxByb0XBB1bVm5bGiF/xi6bjaXuS8Xra1+9bTm94PW02h+0PBDwtqHOJaXVmVmRkSkAheY5YEeI2IqimJDgcJlBOZRfGVRvNhSy2S74um42l7kvF62tfvW05veD1tNoftDwTyuRJj+Ra21dxWbG5BuRheY49BM4kFJUFAMUDFfqfFHCWUyZghgOTB03G0vcl4vW1r962nN7wetptL+0PDVq2U0MjGpPjLIJyyJzAUFlhU6RREooLgfB+p8F4OUxDU+tntODpuNpe5LxetrX71tOb3g9bTbIpCtOB+AnpBOdUAAAFVQTBRQVB6iExg9sqTgWlAVlyYOm42l7kvF62tvu2ta+lcCmA5YqiaLLtVtHyAnXwXXAkGETD1kF+WAHiHKHNg6bjaXuS8Xra3Tvan6YkSK1Z/ienFp1axkZVXAyCREEoXmP4kVhTEhgOGDpuNpe5LxetqaV1LV1GKnhVgpQIUxgKC64n/kTUFMUlAUCKiY1E1LS9yXi9aIcQfZAZCf6KSZ1VGJgJK4KKAmCqgqD/AClMJRQWBTB+p8FYMUSmxL3JeL1zs3puMrOSysovfISS08u0NKLcnC6wJwYwmH+hCY44PjInPlmUFJZbAvcl4vXuTcg4JObLNSI2s7Qs4nkZNGSQheY/sQmOWP3Dq2IuKLjILN68F7kvF7GcZZGahakyR8TWj4mvEnSvKumQqRIWIc8aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0aQ0IpnTwnJVKcQNSZuYKUPxIHKT/k5//EACURAAICAQMDBAMAAAAAAAAAAAEDAAITESFRBDFQEiAwQXBxkP/aAAgBAwEBPwH+H6klkus0Oh8Ynp/VvaAaS1BcaGNSV+J7xPT6b29hGuxjkenevbw9amx0EUkL/fvd0/3Twq1FkpQUGg+FyBfcd4QRsfBJQb7ntAANh8bFBkvQ0Oh8AkLG9zM6+ZnXzM6+ZnXzM6+ZnXzM6+ZnXzM6+ZnXzM6+ZnXzM6+ZdirjQmWAB2/I/wD/xAAqEQABAgQFAwMFAAAAAAAAAAACAAQBAxVSBRESITEiUFEgIzAycIGQkf/aAAgBAgEBPwH9H7t8DaG+8fCbuQcDqDtj7E4SuiVyiKJRzJSZxyS1hFM3wOYeI9pjGAwzin2KRP25PHn0CUQjqFMcShO6Jn1dnnTgkjqOKePzcxy4H1sMUy9ud/eyu3gNob8pw5NwWo/hY4iUjoPcUBjMHUPHYn2JDI6Je5IzKZHUXPxtHpto7cKQ4CeOoOwPZjkuiQP5VPc2qnObVTnNqpzm1U5zaqc5tVOc2qnObVTnNqpzm1U5zaqc5tVOc2qQ2eSC1AKkmRjmcMo/cf8A/8QAORAAAQICBQkGBQUAAwAAAAAAAQIDAAQQESAycRIhMTNBUFFykiIwUnORsRMjQEJhNFNigaFDkNH/2gAIAQEABj8C/wCp357yEnhtj5Lbjn+R8uXQMTGZLQ/qNDXTHaZaMfOllDlVFQeyDwXmisGsd121JTiY1qOqNajqjWo6o1qOqNajqjWo6o1qOqNajqisU1qNQjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYjXtdYitCgocQd2fEmFVcBtMFLJ+A1/HT6xWc57j5DpA8J0QG3vlP/AOHuUN/to7lnijsUzXIfoBzndZdXnUcyU8TCnX1VqP8AneJlJtXa+xZ9u4mF/wAu5mGMFima5D9AOc7qrOiFr/409lA/He1jTCSrWo7K7Tzp+1JMVnuWxscBRTNch+gHOd1OVXl9gd+Gyey6Mn+7S07XCE9004PsUDAUNBz0TXIfoBzndUs3iq2HplRabOgbTHy3XUq/OeMh4ZjdUNBtMrH2rBtS7OKj3curaE5J/qia5D9AOc7qYH8LUu0q6pWeM1D1Yzt9sWhCMLLvBFSLJbI+xR/y08z4VZVD7Td9SahF1vri631xdb64ut9cKbXeSajbBCW8/wDKLrfXF1vri631wGn6svKJzHdTHJalcT7UzXIbQhHKLBJ0CHHD9yibMy9wATEw3wWbORscSRbmfMNoQjDdzHJalcT7UzXIbQhHKLEyraU5I/u1l/uLJgq2LSDZYd8KxbmfMNoQjDdzHJalcT7UzXIbQhHKLDLXjVX6WpZG0IFcSz2KbUu5xRamfMNoQjDdzHJalcT7UzXIbQhHKLCG/wBtFlpvxKAgCFnaghVpbf7arUz5htCEYbuY5LUrifama5DaEI5RYmHNmXmss8E1qofb8SDaca8aPa1M+YbQhGG7mOS1K4n2pmuQxdV6RdV6RdV6RdV6RdV6QOyr0hGAped8KSbUw7wTk0vt+FZsy69mVVamfMNoQjDdzHJalcT7d6pO1whNpTnjXS4diwFWaxDLo+9ANmZ8w2hCMN3MclqVxPt3suzwrVaaYEuTkDTlaY/Sq6o/Sq6obcS0UFIq02gja2opszPmG0IRhu5jktSuJ9u9d4I7PfzDB+5OULMz5htCEYbuY5LUrifbvCo6Bnhxw/com0GmEZSjFbgDj5GdRhT8gmtOlTfDC2wdhOSf7szPmG0IRhu5jktSuJ9qazmEa1HVGtR1RrUdUa1HVGtR1RrUdVMwrbk5ItVNjJbF5Z2R8NhOKtppL8oAl7anYqChxJSoaQbKVDSDXDbg0LSFWJnzDaEIw3cxyWpXE+1M1yG0Ib5RQy1411+lkPTFaJf/AFUJbZSEoGgCK1RwEZLnrRlZkPjQv/2C0+nJULLXFHZsTPmG0IRhu5jktSuJ9qZrkNoQ3yihLf7aKQAKyYS/PjPpDf8A7R+eEVqpqVdisR8N4Z9itojJdFaDdWNBsTDGCxYmfMNoQjDdzHJalcT7UzXIbQhvlFEy5syzVQGmEFSzAcdqcmOPhwoqTpis2fxwitMKaeSFIMFxutcv4uGNLY2L7NiZ8w2hCMN3MclqVxPtTNchtCG+UQ874Uk0ZLQqSLyzoEZDI7RvLOk0ZKNHHuK0x+eEFKhWDshT8kCW9Jb8NDbg+1QMBQ0HPTM+YbQhGG7mOS1K4n2pmuQ2hCOUQpO1xQTAcdrbl+O1WEBtlISgRWqOCe6rEVHMqhT8kMl3SUbFQUrBChpBiXVtAyTTM+YbQhGG7mOS1K4n2pmuQ2mWxpUoChkv50N58jiYqGYRn08IrPe5K/WjLRUiYGhXHGJmUmElLjaq6vwaZnzDaEIw3cxyWmHjoSrPAUk1g6KHEV9t3sgWjOLHYRmRjTUnOqKz39S9EZoyqs/GmZ8w2hCMN3SzmKbYbI+KyNAOyPlS3a/kqPizCso+1kLX2JfarjhCW2k5KE5gKMlv1+i/jFaaZnzDaEIw3c5k3m+2O9S/PCpGxvjjASkAAbBFZioZk/SViM1Dk3LVrbOdSdotCEYbuqOiFJ/4ldpB/HdBDaSpR0AQHpupb+wbE0Z4z/TViKjmVQqYkQAvSpvjhBSoVEbLAhGG7y0vMoZ0q4GFNPJqUO4+Gwms7TsEdntPHSuioZ1RWfqclenjQXG6kTHHxYwpp5JSsbKRCMN4ZDwzjQoaRBOT8RrxptV3GBpXAaYTUPejJb9frMleijJczLF1Y0iPhvpwVsNAhGG8q1shKuKM0fJmVD8KTH6lv0MfqWvQwDNPBbY+1O2AhtISkaAKKgQBF4ReEXhF4ReEXhF4ReEXhF4ReEXhF4ReEXhF4ReEXhF4ReEXhF4ReEXhF4ReEXhF4ReEXgU0Fp9OUk/5ByZkZOytMfqU9MAcB/1O/wD/xAArEAABAgMGBgMBAQEAAAAAAAABABEgIVExQWGhsfAQMFBxgcGR0fHhQJD/2gAIAQEAAT8h/wCToQ99H+CJNi8hRZLNjlHatQvjp7SQjWFQL2RRkBFufyhkIlhBkeUwzSxgL80vzS/NL80vzS/NL80vySAAgINhHEpEDMklgFsD2tge1sD2tge1sD2tge1sD2tge1sD2tge1sD2tge1sD2tge1sD2u/NUOmWpKxmXAI4KgU/dCIpJeeQFG+s4/CBODSAJ+M+uSypkD5M05qU5qU5qU5qU5qU5qU5qU5qVPxd4vBlk3XnFrApqJ0slAoOWJWJ5tYMtxciZ7gmB2EuTNRsOgPrrriiMQAA5JQMEvHVPPNIIhATBCdWPnKHzEEkYZYiHtCXPJfcsYfDjMddcUpJs35rcn55m0O1BvGJsC3glp5RTJj8KUCyiA644pp+Tk0jn+xGJVcE2qyIAplk6xMRjZjmCJgiwwyebAFkPfLcsv5hJ1xxexj1inTgsqBM6IAAAwF3AyCadoR/IjY+KJyVHSGSy4AeP6YQvAB5tjNkQxY2wvmZiAYH84BwBLcLTh5znGzHTVREA5ATTADwec4JsQtBI9K3OMW5Vcm2aWyUgHJwHKPbb5kwuILF8lzoFctLdiXEM+nNomNI95rFmFlunTtzjFuVXJtmlslIG9LE9ySJ+IT8AJJlh/EwmBXjwiACLDFvNYswst06ducYtyq5Ns0tkpAzpm+7B/RE6YYl3GZ1UnVLrCFVcAPcS9RbzWLMLLdOnbnGLcquTbNLZKQNSZA+TP6hkq+uprLAGTOj+MifkzL8GcW81izCy3Tp25xi3Krk2zS2SkDbFyIdglDY13XwPtuGBw8sjKF87Hh3ibzWLMLLdOnbnGLcquIkgAcxVKUpTH0m7U4z6Zs7tJESE2mcL6iyA9y/rgZp6bhnDNNgEuxlFvNYswst06ducYtyq5rBH+kMToCZj4EuLMCFBhkYiYQv54Yd5rFmFlunTtzjFuVXNfDuF0ERWuwQY6vGMS2Fm7nm8TpF/CLRrDvNYswst06ducYtyq5rVBsB8RgPZyHkWAuxY6iHeaxZhZbp07c4xblVzAWUSSLab5kxEdfGGJUpTQjgYAIr0sTbi+iIYsYn/LaKQ7zWLMLLdOnbnGLcquJkUAtJX5Jfkl+SX5Jfkl+SQmJcJ7sXkGUU3BSUvsUNsDfWuPEVbXsPpKL4NgGIhK2wweFYBg8h4N5rFmFlunTtzjFuVUDnVKdUp1SnVKdUozbG1bhTgzJm8GAfZEJi+oCzs4YoCVWAT3GCoRsCsiduAnBmlC3CoIkv4RFRC2SXcPxBvNYswst06ducYtyq5Ns8twpwbsyB8mfEpYhgBegzLbdg2uQAAAGAuU3Tuo5x+J2TtCEIjgo0k1na4KjIBtMExGz0D6g3msWYWW6dO3OMW5Vcm2eW4U4T0cgdgkNOFkoUBOsGmWD7cAPn10RjEcmGTp30e44VvjUFOwMyvYftxdYsEn5sg3msWYWW6dO3OMW5Vcm2eW4UU/mbO7InCbTwB0GeCgJIAcyCM6Te5B3niqleV5BYhmJBwVdTtTPZUcDnzH4kqyFQHnjvNYswst06ducYtyq5Ns0gYexkyx/oTot1dH9Kx3qAi8jBHmHY5QQViEB/qcGNbFS7FCitUYBiCncL+SCXHeaxZhZbp07c4xblVybAXfNiFgCwSTvJ5G5iIbCABgBcr7LiPV7CnMErE8xZ3cBGw2BhQIRAl8g+OO81izCy3TpwTt5xBsfz2WHJCpBOQvHA8A7+xMVszHr758cXX6hFBXJ552zq6IACTgq5ErSTbjvNYswst06cd7v+kYk1oc+0pywVyETk3IuCgEIiyE4mH7IP4JgjK1WpO/+I1rbwQaRxx3msWYWW6dOM2OYeK3LmWp6e3Nb6ghQ2YAYBEJWARH+p/ker3FU77V44PAKb81xEWYWW6dOAYDlIgoewXTonjlHXOwDkph1utftPB6nO4VTtsXD/MBlYhBPAV4XILEh9yNgKYlaIMwst06fSIz3BFbH+CKjDkAh/iGpKfwASeJ9hQcAngKIzK5/0AkFxapUrXKuDGLF2WD7IkNWJccwst06jd2TpK7DqLom2cyeMhUoCMdpvKp4NuSd6EuXP+szJl00QIBwXBTWbsP0CPJA2VjhwzCy3TqRUkDGokk0BxmEbny8JK0sghIPlRDuGwDADgJ9t/7gAAAAAAAAAAAAAAAAAAA8xoHAcv5RVCvllQyDA2WJXpsD/k7/AP/aAAwDAQACAAMAAAAQ8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888w04w8888488888888888888888888888888888888888ws88880888888880888888888888888888888888888884888888s888Y8888c88888888888888888888888888888o8888088Q88U8888488808848888888888888888888888o8888888o8oc84c88888U88A8888888888888888888888o8888888o8488Y48sc88U88A8888888888888888888888o8888wwwg8w888g88888U88A8888888888888888888888o888888888c844k88s88U88A8888888888888888888888o888888888088sw88488U88A8888888888888888888888o8888IMMY8c8w7sc88c8U88A8888888888888888888888o8888888os4kcgBUY888U88A8888888888888888888888o8888888swtSDbbOjs08U88A8888888888888888888888o8880U88ssRHTDDjDxa8U88A88888888888888888888884888M84wSpz77zj77TP+U88A88888888888888888888888Q888488JDLfPLLLXXD3mc8A88888888888888888888888so40ExijDDDTDDjDDDDBUcE8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888//xAAiEQABAgYCAwEAAAAAAAAAAAABABEhMUFQUbEgMHCQodH/2gAIAQMBAT8Q9H5KEBm22SUQ2gAwkmowRJ5jNpAJMEHPxwAFBFrtLO3mKHPPLm7q/EQ1kPQllN56aI7I6wxsVE9kNYYdY6M8pnNg+JO8AAAAAAATaJx5H//EACgRAAECBQMDBAMAAAAAAAAAAAEAESFBYZHRMVFxUKHBIDBw8JCx4f/aAAgBAgEBPxD8H7eidA87J73ImOemOx3nMhk9kXmcnUobZEd6FNvR1Hkbj9dJODsAnEjTTHjYd/QOkYjQpuhyGRwaW26OVtgPsE2NAb1P2Hq0UAWEss3QIIcdEd8ZaCf8CcpwJDj2So8gOKUshg7lPoTp4Ac1pdFJ3KftveM9RjYoXO4nuOegCiaBODtGHNk9PcZVTcZVTcZVTcZVTcZVTcZVTcZVTcZVTcZVTcZVTcZVTcZVTcZQecDyGNDFBZM4HxT5H//EACsQAQAAAwYEBwEBAQAAAAAAAAEAEVEgITFBofAQYbHxMFBxgZHB0UDhkP/aAAgBAQABPxD/AJOyQATn0mbD5gZhfos3SDzLajpIhmZ1Jn3AG4KTfsMknzl+8IzpwQnsHWLiSxOp+v6gp1zGQqJj4XuBCfSbG/8A7jf/ANxv/wC43/8Acb/+43/9xv8A+43f9wWNpomJyeI+dkYFVcP4HTp06dOnTp06dOnTp0UfmUhOpMZeWLQmY9KmZ64Q+5TC6uh6EveHAhNSavr4E/rZo967vckxID7NK87B5vZfBduJ1Junq0lHeI7xHeI7xHeI7xHeIJ32Rd3xNmk697lx3qn8G4VPK5PDJKRkYehisMDe5PkAyDw0oUiXiRO0WfKXrRzwtuESXxP55Dp4M3BQPU+ji3qn8G4VPKkvKQkAXqxRQsAHVifanitfUQkiYJE2c0oxQaK/1G1eYD+YpayhZpuSq3vg4pRBum9AHvx3qn8G4VPKpzspG8vzfD5HjzHz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" alt="CAT Logo" style="height:48px;width:auto;display:block;">
+    </div>
+    <div class="trakindo-badge">BUILT FOR IT.</div>
+  </div>
+  <div class="header-accent"></div>
+  <div class="header-subtitle">
+    <span>FUEL GUARANTEE CALCULATOR</span> &nbsp;·&nbsp; Hitung Cepat. Transparan. Terjamin.
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <h1>FUEL <span class="highlight">GUARANTEE</span><br>CALCULATOR</h1>
+    <p>Hitung potensi penghematan bahan bakar Anda dengan unit CAT®</p>
+  </div>
+  <div class="hero-badges">
+    <div class="badge-pill">📋 INPUT DATA</div>
+    <div class="badge-pill">🏆 RINGKASAN HASIL</div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="main-container">
+
+  <!-- LEFT: INPUT -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">📋</div>
+      <h2>Input Data</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="field">
+        <label>Konsumsi BBM – Unit CAT</label>
+        <div class="field-row">
+          <input type="number" id="konsumsi_cat" value="13" min="1" max="100" step="0.1" oninput="hitung()">
+          <div class="field-unit">Liter / Hour</div>
+        </div>
+        <p class="field-note">Konsumsi resmi CAT sesuai Fuel Guarantee</p>
+      </div>
+
+      <div class="field">
+        <label>Konsumsi BBM – Kompetitor</label>
+        <div class="field-row">
+          <input type="number" id="konsumsi_kompetitor" value="18" min="1" max="100" step="0.1" oninput="hitung()">
+          <div class="field-unit">Liter / Hour</div>
+        </div>
+        <p class="field-note">Konsumsi unit kompetitor yang dibandingkan</p>
+      </div>
+
+      <div class="selisih-display" id="selisih-box">
+        <div>
+          <div class="label">Selisih Konsumsi</div>
+          <div class="field-note" style="margin-top:2px;">CAT vs Kompetitor</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <div class="value" id="selisih-val">5</div>
+          <div class="unit">Liter / Hour</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="field">
+        <label>Total Jam Operasional Per Tahun</label>
+        <div class="field-row">
+          <input type="number" id="total_hours" value="3000" min="1" max="9000" step="100" oninput="hitung()">
+          <div class="field-unit">Hours / Year</div>
+        </div>
+        <p class="field-note">Estimasi jam pakai unit per tahun</p>
+      </div>
+
+      <div class="field" style="margin-bottom:0">
+        <label>Harga Bahan Bakar Saat Ini</label>
+        <div class="field-row">
+          <input type="number" id="harga_bbm" value="18000" min="1000" max="50000" step="500" oninput="hitung()">
+          <div class="field-unit">Rp / Liter</div>
+        </div>
+        <p class="field-note">Harga BBM yang berlaku saat ini</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: RESULT -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">🏆</div>
+      <h2>Ringkasan Hasil</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="result-main">
+        <div class="label-top">Total Penghematan Per Tahun</div>
+        <div class="amount" id="result-main">Rp 270.000.000</div>
+        <div class="amount-sub" id="result-sub">dengan unit CAT vs kompetitor</div>
+      </div>
+
+      <div class="formula-strip">
+        <div class="formula-title">Detail Perhitungan</div>
+        <div class="formula-parts">
+          <div class="formula-part">
+            <span class="fp-val" id="f-selisih">5</span>
+            <span class="fp-label">Selisih (L/H)</span>
+          </div>
+          <div class="formula-op">×</div>
+          <div class="formula-part">
+            <span class="fp-val" id="f-hours">3.000</span>
+            <span class="fp-label">Hours/Yr</span>
+          </div>
+          <div class="formula-op">×</div>
+          <div class="formula-part">
+            <span class="fp-val" id="f-harga">18.000</span>
+            <span class="fp-label">Rp/Liter</span>
+          </div>
+          <div class="formula-eq">=</div>
+          <div class="formula-result-inline">
+            <span class="fp-val" id="f-result">270 Jt</span>
+            <span class="fp-label">Per Tahun</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breakdown-row">
+        <span class="br-label">Jaminan CAT (Fuel Guarantee)</span>
+        <span class="br-val" id="bd-cat">13 L/Hour</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="br-label">Konsumsi Kompetitor</span>
+        <span class="br-val" id="bd-komp">18 L/Hour</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="br-label">Selisih per Jam</span>
+        <span class="br-val" id="bd-selisih">5 Liter</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="br-label">Selisih per Hari (8 jam)</span>
+        <span class="br-val" id="bd-perhari">Rp 720.000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="br-label">Selisih per Bulan (250 jam)</span>
+        <span class="br-val" id="bd-perbulan">Rp 22.500.000</span>
+      </div>
+
+      <div class="guarantee-banner">
+        <div class="icon-shield">🛡️</div>
+        <p>
+          <strong>Jaminan dari Caterpillar</strong>
+          Kami menjamin penghematan bahan bakar Anda. Jika tidak tercapai, kami kompensasi selisihnya.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- MANFAAT -->
+<div class="full-width-section">
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">⭐</div>
+      <h2>Manfaat untuk Anda</h2>
+    </div>
+    <div class="card-body">
+      <div class="manfaat-grid">
+        <div class="manfaat-item">
+          <div class="manfaat-icon">💰</div>
+          <div>
+            <div class="m-title">Hemat Biaya Bahan Bakar</div>
+            <div class="m-desc">Penghematan signifikan setiap tahun</div>
+          </div>
+        </div>
+        <div class="manfaat-item">
+          <div class="manfaat-icon">📈</div>
+          <div>
+            <div class="m-title">Produktivitas Lebih Tinggi</div>
+            <div class="m-desc">Unit bekerja lebih efisien</div>
+          </div>
+        </div>
+        <div class="manfaat-item">
+          <div class="manfaat-icon">✅</div>
+          <div>
+            <div class="m-title">Performa Terjamin</div>
+            <div class="m-desc">Teknologi & kualitas Caterpillar</div>
+          </div>
+        </div>
+        <div class="manfaat-item">
+          <div class="manfaat-icon">⚙️</div>
+          <div>
+            <div class="m-title">Biaya Operasional Optimal</div>
+            <div class="m-desc">Lebih efisien, lebih menguntungkan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>PT Trakindo Utama</p>
+  <div class="tagline">KOMITMEN CEPAT &amp; PASTI TRAKINDO</div>
+</footer>
+
+<script>
+  function fmt(n) {
+    return n.toLocaleString('id-ID');
+  }
+
+  function fmtShort(n) {
+    if (n >= 1e9) return (n / 1e9).toFixed(2).replace('.', ',') + ' M';
+    if (n >= 1e6) return (n / 1e6).toFixed(0) + ' Jt';
+    return fmt(n);
+  }
+
+  function hitung() {
+    const cat = parseFloat(document.getElementById('konsumsi_cat').value) || 0;
+    const komp = parseFloat(document.getElementById('konsumsi_kompetitor').value) || 0;
+    const hours = parseFloat(document.getElementById('total_hours').value) || 0;
+    const harga = parseFloat(document.getElementById('harga_bbm').value) || 0;
+
+    const selisih = komp - cat;
+    const total = selisih * hours * harga;
+
+    // Selisih box color
+    const box = document.getElementById('selisih-box');
+    if (selisih > 0) {
+      box.style.background = '#E8F5EE';
+      box.style.borderColor = '#1A8A4A';
+      document.getElementById('selisih-val').style.color = '#1A8A4A';
+    } else if (selisih < 0) {
+      box.style.background = '#FDECEA';
+      box.style.borderColor = '#C0392B';
+      document.getElementById('selisih-val').style.color = '#C0392B';
+    } else {
+      box.style.background = '#FFF3CC';
+      box.style.borderColor = '#FFC300';
+      document.getElementById('selisih-val').style.color = '#1C1C1C';
+    }
+
+    document.getElementById('selisih-val').textContent = selisih % 1 === 0 ? selisih : selisih.toFixed(1);
+
+    // Main result
+    document.getElementById('result-main').textContent = 'Rp ' + fmt(total);
+
+    // Formula strip
+    document.getElementById('f-selisih').textContent = selisih % 1 === 0 ? selisih : selisih.toFixed(1);
+    document.getElementById('f-hours').textContent = fmt(hours);
+    document.getElementById('f-harga').textContent = fmt(harga);
+    document.getElementById('f-result').textContent = fmtShort(total);
+
+    // Breakdown
+    document.getElementById('bd-cat').textContent = cat + ' L/Hour';
+    document.getElementById('bd-komp').textContent = komp + ' L/Hour';
+    document.getElementById('bd-selisih').textContent = (selisih % 1 === 0 ? selisih : selisih.toFixed(1)) + ' Liter';
+    document.getElementById('bd-perhari').textContent = 'Rp ' + fmt(selisih * 8 * harga);
+    document.getElementById('bd-perbulan').textContent = 'Rp ' + fmt(selisih * 250 * harga);
+  }
+
+  hitung();
+</script>
+</body>
+</html>
